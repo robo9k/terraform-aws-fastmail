@@ -4,6 +4,10 @@ data "aws_route53_zone" "default" {
 
 locals {
   domain = var.subdomain == "" ? data.aws_route53_zone.default.name : "${var.subdomain}.${data.aws_route53_zone.default.name}"
+  mx = [
+    { value = "in1-smtp.messagingengine.com", priority = 10 },
+    { value = "in2-smtp.messagingengine.com", priority = 20 },
+  ]
 }
 
 resource "aws_route53_record" "mx" {
@@ -12,10 +16,7 @@ resource "aws_route53_record" "mx" {
   type    = "MX"
   ttl     = var.ttl
 
-  records = [
-    "20 in2-smtp.messagingengine.com.",
-    "10 in1-smtp.messagingengine.com.",
-  ]
+  records = toset([for mx in local.mx : "${mx.priority} ${mx.value}"])
 }
 
 resource "aws_route53_record" "mx_wildcard" {
@@ -24,10 +25,7 @@ resource "aws_route53_record" "mx_wildcard" {
   type    = "MX"
   ttl     = var.ttl
 
-  records = [
-    "20 in2-smtp.messagingengine.com.",
-    "10 in1-smtp.messagingengine.com.",
-  ]
+  records = toset([for mx in local.mx : "${mx.priority} ${mx.value}"])
 
   lifecycle {
     enabled = var.wildcard
