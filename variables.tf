@@ -24,3 +24,25 @@ variable "wildcard" {
   nullable    = false
   default     = true
 }
+
+variable "spf" {
+  type        = string
+  description = "Full value of the SPF record."
+  nullable    = false
+  default     = "v=spf1 include:spf.messagingengine.com ?all"
+  validation {
+    condition     = startswith(var.spf, "v=spf1")
+    error_message = "SPF record must start with `v=spf1`"
+  }
+}
+
+variable "dmarc" {
+  type        = string
+  description = "Full value of the DMARC record."
+  nullable    = false
+  default     = "v=DMARC1; p=none;"
+  validation {
+    condition     = startswith(var.dmarc, "v=DMARC1;")
+    error_message = "DMARC record must start with `v=DMARC1;`"
+  }
+}

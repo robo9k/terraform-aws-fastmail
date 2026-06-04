@@ -49,7 +49,7 @@ resource "aws_route53_record" "spf" {
   name    = local.domain
   type    = "TXT"
   ttl     = var.ttl
-  records = ["v=spf1 include:spf.messagingengine.com ?all"] # FIXME: defaults: include, term
+  records = [var.spf]
 }
 
 resource "aws_route53_record" "dmarc" {
@@ -57,7 +57,7 @@ resource "aws_route53_record" "dmarc" {
   name    = "_dmarc.${local.domain}"
   type    = "TXT"
   ttl     = var.ttl
-  records = ["v=DMARC1; p=none;"] # FIXME: vars
+  records = [var.dmarc]
 }
 
 resource "aws_route53_record" "submission" {
