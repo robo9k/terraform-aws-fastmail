@@ -36,7 +36,7 @@ resource "aws_route53_record" "dkim" {
   for_each = toset(["fm1", "fm2", "fm3"])
 
   zone_id = data.aws_route53_zone.default.id
-  name    = "${each.key}._domainkey.${local.domain}"
+  name    = "${each.key}._domainkey${var.subdomain == "" ? "" : ".${var.subdomain}"}"
   type    = "CNAME"
   ttl     = var.ttl
   records = ["${each.value}.${local.domain}.dkim.fmhosted.com"]
